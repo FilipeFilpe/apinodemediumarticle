@@ -1,33 +1,33 @@
-const Movie = require('../models/Movie');
+const User = require('../models/User');
 
 module.exports = {
     list(req, res){
-        Movie.findAll()
-            .then(movies => {
-                return res.json(movies);
+        User.findAll()
+            .then(users => {
+                return res.json(users);
             })
             .catch(err => {
                 return console.error("Erro na listagem: ", err);
             });
     },
     show(req, res){
-        Movie.findAll({ where: { id: req.params.devId } })
-            .then(movie => {
-                return res.json(movie);
+        User.findAll({ where: { id: req.params.devId } })
+            .then(user => {
+                return res.json(user);
             })
             .catch(err => {
                 return console.err("Erro na busca: ", err);
             });
     },
     create(req, res){
-        const {title, poster, overview} = req.body;
-        Movie.create({
-            title,
-            poster,
-            overview
+        const {nome, username, email} = req.body;
+        User.create({
+            nome,
+            username,
+            email
         })
-        .then(movie => {
-            return res.json(movie);
+        .then(user => {
+            return res.json(user);
         })
         .catch(err => {
             return console.error('Erro na criação', err);
@@ -36,11 +36,11 @@ module.exports = {
     update(req, res){
         const Sequelize = require('sequelize');
         const Op = Sequelize.Op
-        const {id, title, poster, overview} = req.body;
-        Movie.update({
-            title,
-            poster,
-            overview
+        const {id, nome, username, email} = req.body;
+        User.update({
+            nome,
+            username,
+            email
         }, {
             where: {
                 id: { [Op.eq]: id }
@@ -49,7 +49,7 @@ module.exports = {
         return res.json(req.body);        
     },
     delete(req, res){
-        Movie.destroy({ where: { id: req.params.devId } })
+        User.destroy({ where: { id: req.params.devId } })
             .then(() => {
                 return res.json({msg: `Exclusão de item de ID ${req.params.devId}`});
             })
