@@ -1,60 +1,49 @@
 const Movie = require('../models/Movie');
 
 module.exports = {
-    list(req, res){
-        Movie.findAll()
-            .then(movies => {
-                return res.json(movies);
-            })
-            .catch(err => {
-                return console.error("Erro na listagem: ", err);
-            });
+    async list(req, res){
+        try {
+            const movies = await Movie.findAll()
+            return res.json(movies);
+        } catch (err) {
+            return console.error("Erro na listagem: ", err);
+        }
     },
-    show(req, res){
-        Movie.findAll({ where: { id: req.params.devId } })
-            .then(movie => {
-                return res.json(movie);
-            })
-            .catch(err => {
-                return console.err("Erro na busca: ", err);
-            });
-    },
-    create(req, res){
-        const {title, poster, overview} = req.body;
-        Movie.create({
-            title,
-            poster,
-            overview
-        })
-        .then(movie => {
+    async show(req, res){
+        try {
+            const movie = await Movie.findAll({where: {id: req.params.id}});
             return res.json(movie);
-        })
-        .catch(err => {
-            return console.error('Erro na criação', err);
-        });
+        } catch (err) {
+            return console.err("Erro na busca: ", err);
+        }
     },
-    update(req, res){
+    async create(req, res){
+        const {title, poster, overview} = req.body;
+        try {
+            const movie = await Movie.create({title, poster, overview});
+            return res.json(movie);
+        } catch (err) {
+            return console.error('Erro na criação', err);
+        }
+    },
+    async update(req, res){
         const Sequelize = require('sequelize');
         const Op = Sequelize.Op
-        const {id, title, poster, overview} = req.body;
-        Movie.update({
-            title,
-            poster,
-            overview
-        }, {
-            where: {
-                id: { [Op.eq]: id }
-            }
-        })
-        return res.json(req.body);        
+        const { title, poster, overview } = req.body;
+        const id = req.params.id;
+        try {
+            await Movie.update({title, poster, overview}, {where: {id: {[Op.eq]: id }}});
+            return res.json({msg: `Filme atualizado com sucesso!`});
+        } catch (err) {
+            return res.json({msg: `Filme não foi atualizado`}, err);            
+        }
     },
-    delete(req, res){
-        Movie.destroy({ where: { id: req.params.devId } })
-            .then(() => {
-                return res.json({msg: `Exclusão de item de ID ${req.params.devId}`});
-            })
-            .catch(err => {
-                return console.err("Erro na exclusão: ", err);
-            });
+    async delete(req, res){
+        try {
+            await Movie.destroy({where: {id: req.params.id }});
+            return res.json({msg: `Exclusão de item de ID ${req.params.id} feita com sucesso!`});
+        } catch (err) {
+            return console.err("Erro na exclusão: ", err);
+        }
     },
 }

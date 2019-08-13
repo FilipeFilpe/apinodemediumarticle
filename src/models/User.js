@@ -7,8 +7,8 @@ class User extends Sequelize.Model {}
 User.init({
   nome: Sequelize.STRING,
   username: Sequelize.STRING,
-  email: sequelize.STRING,
-  password: sequelize.STRING
+  email: Sequelize.STRING,
+  password: Sequelize.STRING
 }, { sequelize, modelName: 'user', schema });
 
 sequelize.sync();
